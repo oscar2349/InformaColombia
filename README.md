@@ -32,6 +32,7 @@ Aplicación full stack basada en Micro - servicios para gestionar solicitudes de
   "username": "admin1",
   "password": "12345"
 }
+```
 
 
 - Roles y permisos de Ususario (`/user`)
