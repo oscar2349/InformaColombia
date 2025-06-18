@@ -23,8 +23,9 @@ Aplicación full stack basada en Micro - servicios para gestionar solicitudes de
 3. Tabla Usuarios Roles
 
 
-### Autenticación (`http://localhost:8080/login`) Obtener el JWT
-`POST` 
+### Autenticación (`POST`  `http://localhost:8080/login`) Obtener el JWT
+
+
 
 **Body:**
 ```json
@@ -33,9 +34,10 @@ Aplicación full stack basada en Micro - servicios para gestionar solicitudes de
   "password": "12345"
 }
 ```
-### Crear Usuario (`http://localhost:8080/login`) Obtener el JWT
-`POST` 
+### Crear Usuario (`POST`  `http://localhost:8080/login`)
 
+
+Authorization: bearer tokenJWT generado
 **Body:**
 ```json
 {
@@ -60,12 +62,11 @@ Aplicación full stack basada en Micro - servicios para gestionar solicitudes de
 ```
 http://localhost:8080/api/users
 
-- Roles y permisos de Ususario (`/user`)
+- Roles y permisos de Ususario (`http://localhost:8080/api/users`)
 
 ## repositorio GitHub
 - GitHub : https://github.com/oscar2349/InformaColombia
 ## Instrucciones
-
 
 
 ### Levantar Base de Datos de MYSql
