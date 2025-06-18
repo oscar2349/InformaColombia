@@ -23,8 +23,8 @@ Aplicación full stack basada en Micro - servicios para gestionar solicitudes de
 3. Tabla Usuarios Roles
 
 
-### Autenticación (`/login`)
-`POST` http://localhost:8080/login
+### Autenticación (`http://localhost:8080/login`) Obtener el JWT
+`POST` 
 
 **Body:**
 ```json
@@ -33,7 +33,32 @@ Aplicación full stack basada en Micro - servicios para gestionar solicitudes de
   "password": "12345"
 }
 ```
+### Crear Usuario (`http://localhost:8080/login`) Obtener el JWT
+`POST` 
 
+**Body:**
+```json
+{
+  "id": 1,
+  "name": "Juan",
+  "lastname": "Pérez",
+  "email": "juan.perez@example.com",
+  "username": "juan123",
+  "password": "secreto123",
+  "roles": [
+    {
+      "id": 1,
+      "name": "ROLE_USER"
+    },
+    {
+      "id": 2,
+      "name": "ROLE_ADMIN"
+    }
+  ]
+}
+
+```
+http://localhost:8080/api/users
 
 - Roles y permisos de Ususario (`/user`)
 
