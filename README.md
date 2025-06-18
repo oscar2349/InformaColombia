@@ -1,25 +1,21 @@
-# Medicamentos App
+# Gestion de tareas App
 
 Aplicación full stack basada en Micro - servicios para gestionar solicitudes de medicamentos.
 
 ## Tecnologías
 - Angular
-- Docker - Docker Compose  
 - Spring Boot
-- Eureka Server
-- Spring Cloud ApiGateway
-- Spring Cloud load Balancer
 - MySQL
 - JWT
 - BcryptPassword
 - Auth0 
-- Terraform
 
-## Esquema Base de Datos gestion Medicamentos
+## Esquema Base de Datos gestion Tareas
 
-1. Tabla usuarios
-2. Tabla medicamentos
-3. Tabla solicitudes
+1. Tabla users
+2. Tabla roles
+3. Tabla user_roles
+4. Tabla tareas
 
 ## Esquema Base de Datos gestion Roles y permisos
 
@@ -28,17 +24,23 @@ Aplicación full stack basada en Micro - servicios para gestionar solicitudes de
 
 
 ## Módulos
-- Autenticación (/auth)
+- Autenticación (/login) http://localhost:8080/login  
+body: {
+  "username": "admin1",
+  "password": "12345"
+}
+
+
 - Roles y permisos de Ususario
-- Api Gateway
-- Eureka Server
 - Solicitudes de medicamentos (`/solicitudes`)
 
 ## repositorio GitHub
-- GitHub : https://github.com/oscar2349/nuevaEps
-
+- GitHub : https://github.com/oscar2349/InformaColombia
 ## Instrucciones
-### Levantar Base de Datos
+
+
+
+### Levantar Base de Datos de MYSql
 - Ejecutar el Dockerfile de la carpeta "Database", para crear las tablas con data.
 - Si se desea un Ejecutar el Docker-compose para tener un PHP My Admin como adminsitrador de BDD
 

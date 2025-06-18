@@ -58,7 +58,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         return this.authenticationManager.authenticate(authenticationToken);
     }
 
-    @Override // si todo sale bien, se ejecuta este metodo
+    @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
             Authentication authResult) throws IOException, ServletException {
 
@@ -87,14 +87,14 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         Map<String, String> body = new HashMap<>();
         body.put("token", jwt);
         body.put("username", username);
-        body.put("message", String.format("sesion iniciada con exito", username));
+        body.put("message", String.format("Hola %s has iniciado sesion con exito", username));
 
         response.getWriter().write(new ObjectMapper().writeValueAsString(body));
         response.setContentType(CONTENT_TYPE);
         response.setStatus(200);
     }
 
-    @Override // si hay un error, se ejecuta este metodo
+    @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
             AuthenticationException failed) throws IOException, ServletException {
 
