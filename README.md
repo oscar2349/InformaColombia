@@ -23,16 +23,18 @@ Aplicación full stack basada en Micro - servicios para gestionar solicitudes de
 3. Tabla Usuarios Roles
 
 
-## Módulos
-- Autenticación (/login) http://localhost:8080/login  
-body: {
+### Autenticación (`/login`)
+`POST` http://localhost:8080/login
+
+**Body:**
+```json
+{
   "username": "admin1",
   "password": "12345"
 }
 
 
-- Roles y permisos de Ususario
-- Solicitudes de medicamentos (`/solicitudes`)
+- Roles y permisos de Ususario (`/user`)
 
 ## repositorio GitHub
 - GitHub : https://github.com/oscar2349/InformaColombia
