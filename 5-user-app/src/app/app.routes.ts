@@ -17,8 +17,17 @@ export const routes: Routes = [
         path: 'users',
         component: UserComponent,
     },
-
-       {
+    {
+        path: 'users/create',
+        component: UserFormComponent,
+        canActivate: [authGuard]
+    },
+    {
+        path: 'users/edit/:id',
+        component: UserFormComponent,
+        canActivate: [authGuard]
+    },
+    {
         path: 'tasks',
         component: TaskComponent,
     },
@@ -27,14 +36,14 @@ export const routes: Routes = [
         component: UserComponent,
     },
     {
-        path: 'users/create', 
+        path: 'users/create',
         component: UserFormComponent,
     },
     {
         path: 'users/edit/:id',
         component: UserFormComponent
     },
-     {
+    {
         path: 'login',
         component: AuthComponent
     },
