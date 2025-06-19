@@ -102,4 +102,51 @@ public class TaskController {
         return taskRepository.findByEstado(estado, pageable);
     }
 
+    @GetMapping("/filtrar/page/{page}")
+    public PageResponse<TaskDTO> filtrarTasks(
+            @PathVariable int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction,
+            @RequestParam(required = false) Estado estado,
+            @RequestParam(required = false) Long usuarioId) {
+        Sort sort = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Task> tareasPage;
+
+        if (estado != null && usuarioId != null) {
+            tareasPage = taskRepository.findByEstadoAndUsuarioId(estado, usuarioId, pageable);
+        } else if (estado != null) {
+            tareasPage = taskRepository.findByEstado(estado, pageable);
+        } else if (usuarioId != null) {
+            tareasPage = taskRepository.findByUsuarioId(usuarioId, pageable);
+        } else {
+            tareasPage = taskRepository.findAll(pageable);
+        }
+
+        List<TaskDTO> tareasDTO = tareasPage.getContent().stream().map(t -> {
+            TaskDTO dto = new TaskDTO();
+            dto.setId(t.getId());
+            dto.setTitulo(t.getTitulo());
+            dto.setDescripcion(t.getDescripcion());
+            dto.setFechaCreacion(t.getFechaCreacion());
+            dto.setEstado(t.getEstado());
+            dto.setUsuarioId(t.getUsuario() != null ? t.getUsuario().getId() : null);
+            return dto;
+        }).toList();
+
+        PageResponse<TaskDTO> response = new PageResponse<>();
+        response.setContenido(tareasDTO);
+        response.setPagina(tareasPage.getNumber());
+        response.setTamanio(tareasPage.getSize());
+        response.setTotalElementos(tareasPage.getTotalElements());
+        response.setTotalPaginas(tareasPage.getTotalPages());
+        response.setUltima(tareasPage.isLast());
+
+        return response;
+    }
+
 }

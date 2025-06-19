@@ -1,6 +1,5 @@
 package com.springboot.backend.andres.usersapp.usersbackend.repositories;
 
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.domain.Page;
@@ -14,5 +13,9 @@ import dto.Estado;
 public interface TaskRepository extends JpaRepository<Task, Integer> {
 
     Page<Task> findByEstado(Estado estado, Pageable pageable);
+
+    Page<Task> findByUsuarioId(Long usuarioId, Pageable pageable);
+
+    Page<Task> findByEstadoAndUsuarioId(Estado estado, Long usuarioId, Pageable pageable);
 
 }

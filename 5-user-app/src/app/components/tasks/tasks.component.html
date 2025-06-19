@@ -1,0 +1,56 @@
+
+
+<!-- <button class="btn btn-primary my-3" [routerLink]="['/users/create']">Crear Usuario</button> -->
+
+<!-- <button class="btn btn-primary my-3" [routerLink]="['/users/create']">Crear Usuario</button> -->
+
+<div class="container mt-4">
+  <h2 class="mb-4">Lista de Tareas</h2>
+
+  <div class="row g-3 align-items-center mb-3">
+    <div class="col-auto">
+      <label for="estadoFiltro" class="form-label">Estado:</label>
+      <select id="estadoFiltro" [(ngModel)]="estadoFiltro" class="form-select">
+        <option value="">Todos</option>
+        <option value="PENDIENTE">Pendiente</option>
+        <option value="EN_PROGRESO">En progreso</option>
+        <option value="COMPLETADA">Completada</option>
+      </select>
+    </div>
+
+    <div class="col-auto">
+      <label for="usuarioIdFiltro" class="form-label">Usuario ID:</label>
+      <input type="number" id="usuarioIdFiltro" [(ngModel)]="usuarioIdFiltro" class="form-control" />
+    </div>
+
+    <div class="col-auto mt-4">
+      <button (click)="aplicarFiltros()" class="btn btn-success me-2">Filtrar</button>
+      <button (click)="limpiarFiltros()" class="btn btn-secondary">Limpiar</button>
+    </div>
+  </div>
+
+  <ul class="list-group mb-3">
+    <li *ngFor="let task of tasks" class="list-group-item">
+      {{ task.titulo }} - 
+      <span class="badge bg-info text-dark">{{ task.estado }}</span> 
+      (Usuario: {{ task.usuarioId || 'N/A' }})
+    </li>
+  </ul>
+
+  <div class="d-flex justify-content-center">
+    <div class="btn-group" role="group">
+      <button 
+        class="btn btn-outline-primary" 
+        *ngFor="let i of [].constructor(totalPages); let page = index"
+        (click)="cambiarPagina(page)">
+        {{ page + 1 }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- <paginator [paginator]="paginator" [url]="'/users/page'"/> -->
+
+
+
+<!-- <paginator [paginator]="paginator" [url]="'/users/page'"/> -->
