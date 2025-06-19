@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import java.util.Collections;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -86,7 +86,6 @@ public class TaskController {
         return user;
     }
 
-    // GET /api/tasks?estado=PENDIENTE - Filtrar tareas por estado
     @GetMapping(params = "estado")
     public ResponseEntity<List<TaskDTO>> getTasksByEstado(@RequestParam String estado) {
         try {
@@ -94,10 +93,10 @@ public class TaskController {
             List<TaskDTO> result = taskService.findByEstado(enumEstado)
                     .stream()
                     .map(TaskMapper::toDTO)
-                    .collect(Collectors.toList());
+                    .toList();
             return ResponseEntity.ok(result);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build(); // Estado inválido
+            return ResponseEntity.badRequest().body(Collections.emptyList());
         }
     }
 
@@ -113,7 +112,7 @@ public class TaskController {
 
     @GetMapping("/page/{page}")
     public ResponseEntity<Page<Task>> getTasksPage(@PathVariable int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "5") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Task> tasks = taskService.findAll(pageable);
         return ResponseEntity.ok(tasks);

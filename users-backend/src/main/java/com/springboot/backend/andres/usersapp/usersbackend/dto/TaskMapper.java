@@ -12,10 +12,19 @@ public class TaskMapper {
         dto.setDescripcion(task.getDescripcion());
         dto.setFechaCreacion(task.getFechaCreacion());
         dto.setEstado(task.getEstado().name());
-        if (task.getUsuario() != null) {
-            dto.setUsuarioId(task.getUsuario().getId());
-            dto.setUsuarioNombre(task.getUsuario().getName() + " " + task.getUsuario().getLastname());
+
+        User usuario = task.getUsuario();
+        if (usuario != null) {
+            dto.setUsuarioId(usuario.getId());
+
+            try {
+                // Previene LazyInitializationException
+                dto.setUsuarioNombre(usuario.getName());
+            } catch (Exception e) {
+                dto.setUsuarioNombre(null);
+            }
         }
+
         return dto;
     }
 
@@ -24,7 +33,14 @@ public class TaskMapper {
         task.setId(dto.getId());
         task.setTitulo(dto.getTitulo());
         task.setDescripcion(dto.getDescripcion());
-        task.setEstado(Task.Estado.valueOf(dto.getEstado()));
+        task.setFechaCreacion(dto.getFechaCreacion());
+
+        if (dto.getEstado() != null) {
+            task.setEstado(Task.Estado.valueOf(dto.getEstado().toUpperCase()));
+        } else {
+            task.setEstado(Task.Estado.PENDIENTE);
+        }
+
         task.setUsuario(usuario);
         return task;
     }
