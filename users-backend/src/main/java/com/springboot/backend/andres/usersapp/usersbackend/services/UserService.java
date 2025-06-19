@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
 
 import com.springboot.backend.andres.usersapp.usersbackend.entities.User;
+import com.springboot.backend.andres.usersapp.usersbackend.models.UserRequest;
+
 
 public interface UserService {
 
@@ -18,6 +20,8 @@ public interface UserService {
     Optional<User> findById(@NonNull Long id);
 
     User save(User user);
+
+    Optional<User> update(UserRequest user, Long id);
 
     void deleteById(Long id);
 }
