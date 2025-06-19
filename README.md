@@ -49,7 +49,8 @@ De esta manera retorna el token, se puede probar desde el Back
 ### Crear Usuario (`POST`  `http://localhost:8080/login`)
 
 
-Ejemplo Body para la creacion de un Usuario
+Ejemplo para la creacion de un Usuario
+
 **Body:**
 ```json
 {
@@ -72,17 +73,14 @@ Ejemplo Body para la creacion de un Usuario
 }
 
 ```
-http://localhost:8080/api/users
 
 - Roles y permisos de Ususario (`http://localhost:8080/api/users`)
 
-## repositorio GitHub
-- GitHub : https://github.com/oscar2349/InformaColombia
 
 ### Crear Tarea (`POST`  `http://localhost:8080/api/tasks)
 
 
-Ejemplo body para creacion de una tarea
+Ejemplo para creacion de una tarea
 **Body:**
 ```json
 {
@@ -97,10 +95,12 @@ Ejemplo body para creacion de una tarea
 
 ```
 
-### Crear Paginator (`POST`  `http://localhost:8080/api/tasks/page/0?size=10&sortBy=titulo&direction=desc)
+### Ejemplo Respuesta Paginator, Filtro y ordenado (`POST`  `http://localhost:8080/api/tasks/page/0?size=10&sortBy=titulo&direction=desc)
 
 
 Ejemplo Response Paginator Tasks
+
+
 **Body:**
 ```json
 {
@@ -196,6 +196,8 @@ Ejemplo Response Paginator Tasks
 ```
 
 Ejemplo Response pageable usuarios (http://localhost:8080/api/users/page/0)
+
+
 **Body:**
 ```json
 {
