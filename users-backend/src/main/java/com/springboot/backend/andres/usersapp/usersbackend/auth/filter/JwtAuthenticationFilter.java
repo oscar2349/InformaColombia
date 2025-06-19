@@ -66,7 +66,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         Claims claims = Jwts
                 .claims()
-                .add("authorities", new ObjectMapper().writeValueAsString(roles))
+                .add("authorities", roles.stream().map(GrantedAuthority::getAuthority).toList())
                 .add("username", username)
                 .build();
 
