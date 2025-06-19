@@ -1,25 +1,21 @@
-
-package com.springboot.backend.andres.usersapp.usersbackend.dto;
+package dto;
 
 import java.time.LocalDateTime;
 
 public class TaskDTO {
-
-    private Long id;
+    private Integer id;
     private String titulo;
     private String descripcion;
     private LocalDateTime fechaCreacion;
-    private String estado;
-    private Long usuarioId;       // Solo enviamos el ID del usuario
-    private String usuarioNombre; // Campo opcional para mostrar nombre del usuario
+    private Estado estado;
+    private Long usuarioId;
 
-    // Getters y Setters
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -47,11 +43,11 @@ public class TaskDTO {
         this.fechaCreacion = fechaCreacion;
     }
 
-    public String getEstado() {
+    public Estado getEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
+    public void setEstado(Estado estado) {
         this.estado = estado;
     }
 
@@ -62,12 +58,4 @@ public class TaskDTO {
     public void setUsuarioId(Long usuarioId) {
         this.usuarioId = usuarioId;
     }
-
-    public String getUsuarioNombre() {
-        return usuarioNombre;
-    }
-
-    public void setUsuarioNombre(String usuarioNombre) {
-        this.usuarioNombre = usuarioNombre;
-    }
-}
+}   

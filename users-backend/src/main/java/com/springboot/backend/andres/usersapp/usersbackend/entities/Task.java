@@ -1,8 +1,8 @@
 package com.springboot.backend.andres.usersapp.usersbackend.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
+import dto.Estado;
 
 @Entity
 @Table(name = "tareas")
@@ -10,39 +10,27 @@ public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
-    @NotBlank
     private String titulo;
 
     private String descripcion;
 
-    @Column(name = "fecha_creacion", nullable = false, updatable = false)
+    @Column(name = "fecha_creacion", nullable = false)
     private LocalDateTime fechaCreacion;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private Estado estado;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usuario_id", nullable = true)
+    @ManyToOne
+    @JoinColumn(name = "usuario_id", foreignKey = @ForeignKey(name = "fk_tareas_usuario"))
     private User usuario;
 
-    @PrePersist
-    public void prePersist() {
-        this.fechaCreacion = LocalDateTime.now();
-        if (estado == null) {
-            estado = Estado.PENDIENTE;
-        }
-    }
-
-    // Getters y Setters
-
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -84,12 +72,5 @@ public class Task {
 
     public void setUsuario(User usuario) {
         this.usuario = usuario;
-    }
-
-    // Enum interno para el estado
-    public enum Estado {
-        PENDIENTE,
-        EN_PROGRESO,
-        COMPLETADA
     }
 }

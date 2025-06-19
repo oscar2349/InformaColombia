@@ -1,121 +1,105 @@
 package com.springboot.backend.andres.usersapp.usersbackend.controllers;
 
-import com.springboot.backend.andres.usersapp.usersbackend.dto.TaskDTO;
-import com.springboot.backend.andres.usersapp.usersbackend.dto.TaskMapper;
-import com.springboot.backend.andres.usersapp.usersbackend.entities.Task;
-import com.springboot.backend.andres.usersapp.usersbackend.entities.User;
-import com.springboot.backend.andres.usersapp.usersbackend.services.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import com.springboot.backend.andres.usersapp.usersbackend.entities.Task;
+import com.springboot.backend.andres.usersapp.usersbackend.repositories.TaskRepository;
+import dto.Estado;
+import dto.PageResponse;
+import dto.TaskDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import java.util.Collections;
+import org.springframework.data.domain.Sort;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/tasks")
 public class TaskController {
 
     @Autowired
-    private TaskService taskService;
+    private TaskRepository taskRepository;
 
-    // GET /api/tasks - Obtener todas las tareas
     @GetMapping
-    public List<TaskDTO> getAllTasks() {
-        return taskService.findAll()
-                .stream()
-                .map(TaskMapper::toDTO)
-                .collect(Collectors.toList());
+    public List<Task> listar() {
+        return taskRepository.findAll();
     }
 
-    // GET /api/tasks/{id} - Obtener una tarea por ID
     @GetMapping("/{id}")
-    public ResponseEntity<TaskDTO> getTaskById(@PathVariable Long id) {
-        Optional<Task> optionalTask = taskService.findById(id);
-        return optionalTask
-                .map(task -> ResponseEntity.ok(TaskMapper.toDTO(task)))
+    public ResponseEntity<Task> obtener(@PathVariable Integer id) {
+        return taskRepository.findById(id)
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // POST /api/tasks - Crear una nueva tarea
     @PostMapping
-    public ResponseEntity<TaskDTO> createTask(@RequestBody TaskDTO dto) {
-        Task task = TaskMapper.toEntity(dto, buildUserFromId(dto.getUsuarioId()));
-        Task saved = taskService.save(task);
-        return ResponseEntity.ok(TaskMapper.toDTO(saved));
+    public Task crear(@RequestBody Task task) {
+        return taskRepository.save(task);
     }
 
-    // PUT /api/tasks/{id} - Actualizar una tarea existente
     @PutMapping("/{id}")
-    public ResponseEntity<TaskDTO> updateTask(@PathVariable Long id, @RequestBody TaskDTO dto) {
-        Optional<Task> optionalTask = taskService.findById(id);
-        if (optionalTask.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        Task existing = optionalTask.get();
-        existing.setTitulo(dto.getTitulo());
-        existing.setDescripcion(dto.getDescripcion());
-        existing.setEstado(Task.Estado.valueOf(dto.getEstado()));
-        existing.setUsuario(buildUserFromId(dto.getUsuarioId()));
-
-        Task updated = taskService.save(existing);
-        return ResponseEntity.ok(TaskMapper.toDTO(updated));
+    public ResponseEntity<Task> actualizar(@PathVariable Integer id, @RequestBody Task task) {
+        return taskRepository.findById(id).map(t -> {
+            t.setTitulo(task.getTitulo());
+            t.setDescripcion(task.getDescripcion());
+            t.setEstado(task.getEstado());
+            t.setFechaCreacion(task.getFechaCreacion());
+            t.setUsuario(task.getUsuario());
+            return ResponseEntity.ok(taskRepository.save(t));
+        }).orElse(ResponseEntity.notFound().build());
     }
 
-    // DELETE /api/tasks/{id} - Eliminar una tarea por ID
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
-        if (taskService.findById(id).isEmpty()) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
+        if (taskRepository.existsById(id)) {
+            taskRepository.deleteById(id);
+            return ResponseEntity.noContent().build();
         }
-        taskService.deleteById(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    // Método auxiliar para construir un User con solo el ID
-    private User buildUserFromId(Long id) {
-        if (id == null)
-            return null;
-        User user = new User();
-        user.setId(id);
-        return user;
-    }
-
-    @GetMapping(params = "estado")
-    public ResponseEntity<List<TaskDTO>> getTasksByEstado(@RequestParam String estado) {
-        try {
-            Task.Estado enumEstado = Task.Estado.valueOf(estado.toUpperCase());
-            List<TaskDTO> result = taskService.findByEstado(enumEstado)
-                    .stream()
-                    .map(TaskMapper::toDTO)
-                    .toList();
-            return ResponseEntity.ok(result);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(Collections.emptyList());
-        }
-    }
-
-    // GET /api/tasks/user/5 - Filtrar tareas por ID de usuario
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<TaskDTO>> getTasksByUsuarioId(@PathVariable Long userId) {
-        List<TaskDTO> result = taskService.findByUsuarioId(userId)
-                .stream()
-                .map(TaskMapper::toDTO)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(result);
+        return ResponseEntity.notFound().build();
     }
 
     @GetMapping("/page/{page}")
-    public ResponseEntity<Page<Task>> getTasksPage(@PathVariable int page,
+    public PageResponse<TaskDTO> listarPaginadoDTO(@PathVariable int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction) {
+        Sort sort = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Task> tareasPage = taskRepository.findAll(pageable);
+
+        List<TaskDTO> tareasDTO = tareasPage.getContent().stream().map(t -> {
+            TaskDTO dto = new TaskDTO();
+            dto.setId(t.getId());
+            dto.setTitulo(t.getTitulo());
+            dto.setDescripcion(t.getDescripcion());
+            dto.setFechaCreacion(t.getFechaCreacion());
+            dto.setEstado(t.getEstado());
+            dto.setUsuarioId(t.getUsuario() != null ? t.getUsuario().getId() : null);
+            return dto;
+        }).toList();
+
+        PageResponse<TaskDTO> response = new PageResponse<>();
+        response.setContenido(tareasDTO);
+        response.setPagina(tareasPage.getNumber());
+        response.setTamanio(tareasPage.getSize());
+        response.setTotalElementos(tareasPage.getTotalElements());
+        response.setTotalPaginas(tareasPage.getTotalPages());
+        response.setUltima(tareasPage.isLast());
+
+        return response;
+    }
+
+    @GetMapping("/estado/{estado}/page/{page}")
+    public Page<Task> listarPorEstadoPaginado(@PathVariable Estado estado,
+            @PathVariable int page,
             @RequestParam(defaultValue = "5") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Task> tasks = taskService.findAll(pageable);
-        return ResponseEntity.ok(tasks);
+        return taskRepository.findByEstado(estado, pageable);
     }
 
 }

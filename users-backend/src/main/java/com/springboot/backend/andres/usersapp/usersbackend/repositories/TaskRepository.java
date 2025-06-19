@@ -1,17 +1,18 @@
 package com.springboot.backend.andres.usersapp.usersbackend.repositories;
 
-import com.springboot.backend.andres.usersapp.usersbackend.entities.Task;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.CrudRepository;
 
-import java.util.List;
+import com.springboot.backend.andres.usersapp.usersbackend.entities.Task;
 
-public interface TaskRepository extends CrudRepository<Task, Long> {
+import dto.Estado;
 
-    Page<Task> findAll(Pageable pageable);
+@Repository
+public interface TaskRepository extends JpaRepository<Task, Integer> {
 
-    List<Task> findByEstado(Task.Estado estado);
+    Page<Task> findByEstado(Estado estado, Pageable pageable);
 
-    List<Task> findByUsuario_Id(Long userId);
 }
