@@ -1,5 +1,7 @@
 package com.springboot.backend.andres.usersapp.usersbackend.auth;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -17,10 +19,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
-import java.util.Arrays;
-
-
 import com.springboot.backend.andres.usersapp.usersbackend.auth.filter.JwtAuthenticationFilter;
+import com.springboot.backend.andres.usersapp.usersbackend.auth.filter.JwtValidationFilter;
 
 @Configuration
 public class SpringSecurityConfig {
@@ -52,13 +52,15 @@ public class SpringSecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/tasks").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/tasks/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/tasks/**").hasRole("ADMIN")
-                .anyRequest().authenticated())
+                 .anyRequest().authenticated())
+                .cors(cors -> cors.configurationSource(configurationSource()))
                 .addFilter(new JwtAuthenticationFilter(authenticationManager()))
-                .csrf(csrf -> csrf.disable())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilter(new JwtValidationFilter(authenticationManager()))
+                .csrf(config -> config.disable())
+                .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
-    }
 
+    }
     @Bean
     CorsConfigurationSource configurationSource() {
         CorsConfiguration config = new CorsConfiguration();
